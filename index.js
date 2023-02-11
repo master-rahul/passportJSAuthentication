@@ -24,12 +24,12 @@ app.use(expressLayouts);                                            // Using lay
 
 app.use(expressSession({
     name: 'passport Autentication',
+    //TODO : change the secret phrase before deploying in production
     secret: 'secret-phrase',
-    //TODO : to implement random string during produciton
     saveUninitialized: false,
     resave: false,
     cookie: {
-        maxAge: (1000 * 60 * 10)
+        maxAge: (1000 * 15)
     }
 }));
 app.use(passport.initialize());
