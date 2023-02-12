@@ -7,8 +7,13 @@ module.exports.signIn = function (request, response) {
 module.exports.signUp = function(request, response) {
     return response.render('user_sign_up', {title : 'Sign Up'});
 }
-module.exports.signOut = function(request, response) {
+module.exports.destroySession = function(request, response) {
    //TO DO 
+    //passport js gives this method to request to logout.
+    request.logout(function (error) {
+        if (error) { response.redirect('/'); }
+        response.redirect('/');
+    });
 }
 module.exports.add = function(request, response) {
     if(request.body.password != request.body.confirm_password) return response.redirect('back');
@@ -26,9 +31,9 @@ module.exports.add = function(request, response) {
         }
     });
 }
-module.exports.autheticate = function(request, response) {
-   return response.render('profile', {title : 'Welcome'});
+module.exports.createSession = function(request, response) {
+   return response.redirect('/user/profile');
 }
 module.exports.profile = function(request, response) {
-    return response.send('<h1>Hello</h1>');
+    return response.render('user_profile');
 }
