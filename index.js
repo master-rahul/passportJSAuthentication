@@ -6,7 +6,9 @@ const bodyParser = require('body-parser');                          // Fetching 
 const cookieParser = require('cookie-parser');                      // Fetching cookie-parser to access cookies in request and resposes.
 const expressSession = require('express-session');                  // Fetching express session.
 const passport = require('passport');                               // Fetching passport modules.
-const passportLocal = require('./config/passport_local_strategy');  // Fetching passport-local configuration.
+//const passportLocal = require('./config/passport_local_strategy');// Fetching passport-local configuration.
+const MongoStore = require('connect-mongo');                        // For storing session cookie so that cookies are not reset when server is restarted.
+const db = require('./config/mongoose');
 const app = express();                                              // Fetching Express constructor response to app variable.
 
 app.set('view engine', 'ejs');                                      // Setting up Template Engine. 
@@ -23,18 +25,26 @@ app.use(static);                                                    // Using the
 app.use(expressLayouts);                                            // Using layout as middleware to manage layout of the rendered page.
 
 app.use(expressSession({
-    name: 'passport Autentication',
+    name: 'passport Autentications',
     //TODO : change the secret phrase before deploying in production
     secret: 'secret-phrase',
     saveUninitialized: false,
     resave: false,
     cookie: {
-        maxAge: (1000 * 15)
-    }
+        maxAge: (1000 * 60 * 5)
+    },
+    store: MongoStore.create(
+        {                                      // mongo store is used to store cookie in db.
+        mongoUrl: 'mongodb://localhost/passportJSAuthentication',
+        autoRemove: 'disabled',
+        }, function(error) {
+            console.log(error || 'connect-mongodb setup ok');
+        }
+    )
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(passport.setAuthenticatedUser);
 app.use('/', routes);                                               // Using routes when request.url == '/'.
 
 app.listen(process.env.PORT||3000, function(error) {

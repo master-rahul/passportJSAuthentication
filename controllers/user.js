@@ -27,8 +27,8 @@ module.exports.add = function(request, response) {
     });
 }
 module.exports.autheticate = function(request, response) {
-   return response.render('profile', {title : 'Welcome'});
+   return response.redirect('/user/profile');
 }
 module.exports.profile = function(request, response) {
-    return response.send('<h1>Hello</h1>');
+    return response.render('user_profile');
 }
